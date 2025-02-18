@@ -1,0 +1,23 @@
+defmodule <%= Lexgen.Schema.deref_main(lexicon, lexicon.defs.schema.key) %> do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  @doc """
+  <%= lexicon.defs.schema.description %>
+  """
+  @primary_key {:id, <%= lexicon.defs.schema.pktype %>, autogenerate: false}
+  schema "<%= lexicon.nsid %>" do
+    <%= Lexgen.Schema.fields(lexicon.defs.schema) %>
+
+    # DO NOT CHANGE! This field is required for all records and must be set to the NSID of the lexicon.
+    # Ensure that you do not change this field via manual manipulation or changeset operations.
+    field :"$type", :string, default: "<%= lexicon.nsid %>"
+  end
+
+  def new(params \\ %{}), do: changeset(%__MODULE__{}, params)
+
+  def changeset(struct, params \\ %{}) do
+    struct
+    <%= Lexgen.Schema.operations(lexicon.defs.schema) %>
+  end
+end

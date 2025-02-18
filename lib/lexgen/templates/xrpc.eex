@@ -1,0 +1,13 @@
+defmodule <%= lexicon.nsid_title %> do
+  <% function = Map.get(lexicon.defs, type) %>
+  @doc """
+  <%= function.description %>
+  """
+  @spec <%= function.key %>(<%= Lexgen.Xrpc.params_spec(function) %>, Atproto.xrpc_opts()) :: {:ok, <%= function.output %>} | {:error, any}
+  def <%= function.key %>(params \\ %{}, opts \\ []) do
+    params
+    |> Map.take([<%= Lexgen.Xrpc.param_names(function) |> Enum.join(", ") %>])
+    |> Atproto.ensure_required([<%= Lexgen.Xrpc.required_param_names(function) |> Enum.join(", ") %>])
+    |> Atproto.<%= type %>("<%= Lexgen.Xrpc.xrpc_target(function) %>", opts)
+  end
+end

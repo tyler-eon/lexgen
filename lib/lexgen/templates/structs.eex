@@ -1,0 +1,22 @@
+<%= for struct <- lexicon.defs.struct do %>
+defmodule <%= lexicon.nsid_title %>.<%= :string.titlecase(struct.key) %> do
+  @moduledoc """
+  <%= struct.description %>
+  """
+
+  @derive Jason.Encoder
+  defstruct [
+    <%= Lexgen.Structs.fields(struct) |> Enum.join(",\n    ") %>
+  ]
+
+  @type t() :: %__MODULE__{
+    <%= Lexgen.Structs.specs(struct) |> Enum.join(",\n    ") %>
+  }
+
+  @spec new() :: t()
+  def new(), do: %__MODULE__{}
+
+  @spec from(binary() | map()) :: t()
+  def from(json), do: Atproto.decode_to_struct(__MODULE__, json)
+end
+<% end %>
